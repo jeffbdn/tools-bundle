@@ -9,8 +9,8 @@
         {
             "name": "Jean-Francois BAUDRON",
             "email": "jeanfrancois.baudron@free.fr"
-        },
-    ].
+        }
+    ],
     "require": {
         "php": ">=5.6.0",
         "symfony/framework-bundle": "~2.3"
