@@ -42,3 +42,13 @@ class AppKernel extends Kernel
     // ...
 }
 ```
+
+This bundle comes with several services. In order to make them available for your project,
+register the bundle's `services.yml` file in your `config.yml`:
+
+```yaml
+# app/config/config.yml
+imports:
+    ...
+    - { resource: "@JeffBdnToolsBundle/Resources/config/services.yml" }
+```
