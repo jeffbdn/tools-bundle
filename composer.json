@@ -1,14 +1,14 @@
 {
-    "name": "jeffBdn/tools-bundle",
+    "name": "jeffbdn/tools-bundle",
     "type": "symfony-bundle",
     "description": "Symfony JeffBdnToolsBundle",
     "keywords": ["Toolbox"],
-    "homepage": "HOMEPAGE",
+    "homepage": "https://github.com/jeffbdn/tools-bundle",
     "license": "MIT",
     "authors": [
         {
             "name": "Jean-Francois BAUDRON",
-            "email": "later"
+            "email": "jeanfrancois.baudron@free.fr"
         },
     ].
     "require": {
@@ -25,8 +25,5 @@
     "autoload": {
         "psr-0": { "JeffBdn\\ToolsBundle": "" }
     },
-    "target-dir": "JeffBdn/ToolsBundle",
-    "support": {
-        "docs": "github.com LIEN VERS DOC"
-    }
+    "target-dir": "JeffBdn/ToolsBundle"
 }
