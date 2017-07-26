@@ -1,0 +1,4 @@
+services:
+    jeffbdn_tools.math:
+        class: JeffBdn\ToolsBundle\Service\Math
+       # arguments: ['%data%']

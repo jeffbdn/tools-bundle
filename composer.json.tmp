@@ -1,0 +1,32 @@
+{
+    "name": "jeffBdn/tools-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony JeffBdnToolsBundle",
+    "keywords": ["Toolbox"],
+    "homepage": "HOMEPAGE",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jean-Francois BAUDRON",
+            "email": "later"
+        },
+    ].
+    "require": {
+        "php": ">=5.6.0",
+        "symfony/framework-bundle": "~2.3"
+        "symfony/security-bundle": "~2.3"
+    },
+    "require-dev": {
+        "twig/twig": "~1.5",
+        "doctrine/doctrine-bundle": "~1.3",
+        "symfony/yaml": "~2.3",
+        "symfony/validator": "~2.3"
+    },
+    "autoload": {
+        "psr-0": { "JeffBdn\\ToolsBundle": "" }
+    },
+    "target-dir": "JeffBdn/ToolsBundle",
+    "support": {
+        "docs": "github.com LIEN VERS DOC"
+    }
+}
