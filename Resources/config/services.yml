@@ -2,3 +2,7 @@ services:
     jeffbdn_tools.math:
         class: JeffBdn\ToolsBundle\Service\Math
        # arguments: ['%data%']
+
+    jeffbdn_tools.weather:
+        class: JeffBdn\ToolsBundle\Service\Weather
+       # arguments: ['%data%']
