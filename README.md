@@ -52,3 +52,56 @@ imports:
     ...
     - { resource: "@JeffBdnToolsBundle/Resources/config/services.yml" }
 ```
+
+Step 3: Use the Tools
+-------------------------
+
+The current version of JeffBdnToolsBundle provides 2 services:
+
+- A random number provider
+```php
+$randomNumber = $this->get('jeffbdn_tools.math')->random();
+```
+
+- a weather broadcast provider
+```php
+$weatherBroadcast = $this->get('jeffbdn_tools.weather')->broadcast('Paris,fr');
+```
+
+The data you may be interested to use are:
+
+- Temperatures in Kelvin, Celsius, Fahrenheit
+```php
+$weatherBroadcast['temp_k']
+$weatherBroadcast['temp_k_min']
+$weatherBroadcast['temp_k_max']
+```
+```php
+$weatherBroadcast['temp_c']
+$weatherBroadcast['temp_c']
+$weatherBroadcast['temp_c_max']
+```
+```php
+$weatherBroadcast['temp_f']
+$weatherBroadcast['temp_f_min']
+$weatherBroadcast['temp_f_max']
+```
+- Sky and Atmosphere details:
+```php
+$weatherBroadcast['humidity_percentage']
+$weatherBroadcast['sky_description_short']
+$weatherBroadcast['sky_description_long']
+$weatherBroadcast['pressure_hpa']
+$weatherBroadcast['sunrise']
+$weatherBroadcast['sunset']
+```
+- Miscellanous Infos:
+```php
+$weatherBroadcast['date']        // date of last update
+$weatherBroadcast['ok']           // true if API call went well, else false
+$weatherBroadcast['error_code']         // if ['ok'] false, this is the HTTP response code
+$weatherBroadcast['error_string'] // if ['ok'] false, this is the API response message
+```
+
+If you encounter any bug, please report on
+http://www.github.com/jeffbdn/tools-bundle/issues

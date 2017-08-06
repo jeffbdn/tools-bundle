@@ -1,3 +1,10 @@
+parameters:
+      jeffbdn_tools.weather.apikey: 'MY API KEY'
+      jeffbdn_tools.weather.apiurlbase: 'http://api.openweathermap.org/data/2.5/weather?q='
+      jeffbdn_tools.weather.cachedir: '%kernel.cache_dir%/jeffbdntoolsbundle'
+      jeffbdn_tools.weather.cachefilepath: '%kernel.cache_dir%/jeffbdntoolsbundle/weather.json'
+      jeffbdn_tools.weather.refresh: 1 # days
+
 services:
     jeffbdn_tools.math:
         class: JeffBdn\ToolsBundle\Service\Math
@@ -5,4 +12,9 @@ services:
 
     jeffbdn_tools.weather:
         class: JeffBdn\ToolsBundle\Service\Weather
-       # arguments: ['%data%']
+        arguments:
+            - '%jeffbdn_tools.weather.apikey%'
+            - '%jeffbdn_tools.weather.apiurlbase%'
+            - '%jeffbdn_tools.weather.cachedir%'
+            - '%jeffbdn_tools.weather.cachefilepath%'
+            - '%jeffbdn_tools.weather.refresh%'
