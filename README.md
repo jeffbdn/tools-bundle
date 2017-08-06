@@ -63,7 +63,7 @@ The current version of JeffBdnToolsBundle provides 2 services:
 $randomNumber = $this->get('jeffbdn_tools.math')->random();
 ```
 
-- a weather broadcast provider
+- A weather broadcast provider
 ```php
 $weatherBroadcast = $this->get('jeffbdn_tools.weather')->broadcast('Paris,fr');
 ```
@@ -88,19 +88,25 @@ $weatherBroadcast['temp_f_max']
 ```
 - Sky and Atmosphere details:
 ```php
-$weatherBroadcast['humidity_percentage']
+$weatherBroadcast['humidity']
 $weatherBroadcast['sky_description_short']
 $weatherBroadcast['sky_description_long']
 $weatherBroadcast['pressure_hpa']
 $weatherBroadcast['sunrise']
 $weatherBroadcast['sunset']
 ```
-- Miscellanous Infos:
+- Date of last update:
 ```php
-$weatherBroadcast['date']        // date of last update
-$weatherBroadcast['ok']           // true if API call went well, else false
-$weatherBroadcast['error_code']         // if ['ok'] false, this is the HTTP response code
-$weatherBroadcast['error_string'] // if ['ok'] false, this is the API response message
+$weatherBroadcast['date']
+```
+- Error Management:
+```php
+// true if API call went well, else false
+$weatherBroadcast['ok']
+// this is the HTTP response code, default is 200
+$weatherBroadcast['error_code']
+// this is the API response message, default is an empty string
+$weatherBroadcast['error_string']
 ```
 
 If you encounter any bug, please report on
