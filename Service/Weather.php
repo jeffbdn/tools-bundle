@@ -30,9 +30,9 @@ class Weather
     public function broadcast($location)
     {
         if ($weather = $this->getDataFromCache()) {
-            $dateNow = date_create();
+            $dateExpire = date_create("- ".$this->refresh);
             $dateThen = date_create($weather['date']);
-            if (date_diff($dateThen,$dateNow)->format('%d') < $this->refresh) return $weather;
+            if ($dateThen > $dateExpire) return $weather;
         }
         // renew value in cache
         $weather = $this->callWeatherAPI($location);

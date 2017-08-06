@@ -1,9 +1,11 @@
 parameters:
-      jeffbdn_tools.weather.apikey: 'MY API KEY'
       jeffbdn_tools.weather.apiurlbase: 'http://api.openweathermap.org/data/2.5/weather?q='
       jeffbdn_tools.weather.cachedir: '%kernel.cache_dir%/jeffbdntoolsbundle'
       jeffbdn_tools.weather.cachefilepath: '%kernel.cache_dir%/jeffbdntoolsbundle/weather.json'
-      jeffbdn_tools.weather.refresh: 1 # days
+
+# to add and configure in your app/config/config.yml:
+#      jeffbdn_tools.weather.apikey: 'MY API KEY'
+#      jeffbdn_tools.weather.refresh: '3 minutes' # or 1 day or 2 days or 1 hour or 2 hours or 1 minute or 2 minutes
 
 services:
     jeffbdn_tools.math:

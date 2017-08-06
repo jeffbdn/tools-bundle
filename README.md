@@ -53,6 +53,17 @@ imports:
     - { resource: "@JeffBdnToolsBundle/Resources/config/services.yml" }
 ```
 
+Then, add and customise those parameters in your `config.yml`: 
+```yaml
+# app/config/config.yml
+parameters:
+      jeffbdn_tools.weather.apikey: 'PASTE HERE YOUR openweathermaps API KEY'
+      jeffbdn_tools.weather.apiurlbase: 'http://api.openweathermap.org/data/2.5/weather?q='
+      jeffbdn_tools.weather.cachedir: '%kernel.cache_dir%/jeffbdntoolsbundle'
+      jeffbdn_tools.weather.cachefilepath: '%kernel.cache_dir%/jeffbdntoolsbundle/weather.json'
+      jeffbdn_tools.weather.refresh: '3 minutes' # or 1 day or 2 days or 1 hour or 2 hours or 1 minute or 2 minutes
+```
+
 Step 3: Use the Tools
 -------------------------
 
@@ -110,6 +121,8 @@ $weatherBroadcast['ok']
 $weatherBroadcast['error_code']
 // this is the API response message, default is an empty string
 $weatherBroadcast['error_string']
+
+
 ```
 
 If you encounter any bug, please report on
