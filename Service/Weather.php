@@ -67,6 +67,9 @@ class Weather
         $result['sky_description_short'] = $arrayWeather['weather'][0]['main'];
         $result['sky_description_long']  = $arrayWeather['weather'][0]['description'];
         $result['pressure_hpa']          = $arrayWeather['main']['pressure'];
+        $result['wind_speed_metersec']    = $arrayWeather['wind']['speed'];
+        $result['wind_direction_degrees'] = $arrayWeather['wind']['deg'];
+        $result['cloud_percent']          = $arrayWeather['clouds']['all'];
         $result['sunrise']               = date("Y-m-d H:i:s", $arrayWeather['sys']['sunrise']);
         $result['sunset']                = date("Y-m-d H:i:s", $arrayWeather['sys']['sunset']);
         $result['ok']                    = ($arrayWeather['cod'] != 200) ? false : true;

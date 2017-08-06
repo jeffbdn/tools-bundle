@@ -92,12 +92,15 @@ $weatherBroadcast['humidity']
 $weatherBroadcast['sky_description_short']
 $weatherBroadcast['sky_description_long']
 $weatherBroadcast['pressure_hpa']
-$weatherBroadcast['sunrise']
-$weatherBroadcast['sunset']
+$weatherBroadcast['wind_speed_metersec']
+$weatherBroadcast['wind_direction_degrees']
+$weatherBroadcast['cloud_percent']
 ```
-- Date of last update:
+- Date of last update, sunrise and sunset:
 ```php
 $weatherBroadcast['date']
+$weatherBroadcast['sunrise']
+$weatherBroadcast['sunset']
 ```
 - Error Management:
 ```php
