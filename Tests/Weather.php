@@ -18,6 +18,10 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
     private static $apicalldata;
 
     /**
+     * ---------- PROVIDERS ----------
+     */
+
+    /**
      * @param Weather $weather
      * @return array
      * @large
@@ -31,28 +35,6 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * WeatherTest constructor.
-     */
-    public function __construct($name = null, array $data = array(), $dataName = ''){
-        $this->preSetUp();
-        parent::__construct($name, $data, $dataName);
-    }
-
-    public function preSetUp(){
-        if (!self::$apicalldata)
-            self::$apicalldata = '';
-    }
-
-    /**
-     * This test makes an API call
-     * @param array $data
-     * @dataProvider getAPIdataProvider
-     */
-    public function test_callWeatherAPI($data){
-        $this->assertEquals(200, $data['cod']);
-    }
-
     public static function weatherObjProvider(){
         return array(array(
             new Weather(
@@ -63,6 +45,21 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
                 '1 day'
             )));
     }
+
+    /**
+     * ---------- TESTS ----------
+     */
+
+    /**
+     * This test makes an API call
+     * @param array $data
+     * @dataProvider getAPIdataProvider
+     */
+    public function test_callWeatherAPI($data){
+        $this->assertEquals(200, $data['cod']);
+    }
+
+
 
     /**
      * An error here means OpenWeatherMaps changed their JSON format by deleting an entry.
@@ -177,5 +174,18 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
     public function test_global_broadcast()
     {
         $this->assertTrue(true);
+    }
+
+    /**
+     * WeatherTest constructor.
+     */
+    public function __construct($name = null, array $data = array(), $dataName = ''){
+        $this->preSetUp();
+        parent::__construct($name, $data, $dataName);
+    }
+
+    public function preSetUp(){
+        if (!self::$apicalldata)
+            self::$apicalldata = '';
     }
 }

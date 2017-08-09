@@ -87,7 +87,6 @@ class Weather
      * @param array $arrayWeather
      * @return array $formatedWeatherData
      */
-    // todo update README.md : no more wind.deg
     public function formatWeatherDataFromAPI(array $arrayWeather){
 
         $formatedWeatherData = array();
