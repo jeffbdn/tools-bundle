@@ -104,7 +104,6 @@ $weatherBroadcast['sky_description_short']
 $weatherBroadcast['sky_description_long']
 $weatherBroadcast['pressure_hpa']
 $weatherBroadcast['wind_speed_metersec']
-$weatherBroadcast['wind_direction_degrees']
 $weatherBroadcast['cloud_percent']
 ```
 - Date of last update, sunrise and sunset:
@@ -121,9 +120,12 @@ $weatherBroadcast['ok']
 $weatherBroadcast['error_code']
 // this is the API response message, default is an empty string
 $weatherBroadcast['error_string']
-
-
 ```
 
+Step 4: Testing the ToolsBundle
+-------------------------
+```bash 
+$ phpunit vendor/jeffbdn/tools-bundle/JeffBdn/ToolsBundle/Tests/Weather.php
+```
 If you encounter any bug, please report on
 http://www.github.com/jeffbdn/tools-bundle/issues
