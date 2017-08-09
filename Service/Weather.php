@@ -4,6 +4,10 @@ namespace JeffBdn\ToolsBundle\Service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOException;
 
+/**
+ * Service that provides a broadcast for a named city
+ * @author Jean-Francois BAUDRON <jeanfrancois.baudron@free.fr>
+ */
 class Weather
 {
     private $subjectCache;
@@ -27,6 +31,15 @@ class Weather
         $this->fs            = new Filesystem();
     }
 
+    /**
+     * Main Method of the Service
+     * returns array with weather data from given location
+     * if provided $location is not formatted as precised below, returns array with errors
+     * if cached data is too old regarding to configured refresh time, it is renewed.
+     * @param string $location ref location - format "CityName,ISOCountry" like "Paris,fr"
+     * @return array
+     * todo offer option to force renewing of the cache if wanted
+     */
     public function broadcast($location)
     {
         if (! $this->checkLocation($location)) return array(
@@ -42,10 +55,16 @@ class Weather
 
         // renew value in cache
         $weather = $this->callWeatherAPI($location);
-        $this->majDataInCache($weather);
+        $this->updateDataInCache($weather);
         return $weather;
     }
 
+    /**
+     * Call the OpenWeatherMaps API for given $location
+     * and returns an array with explicited collected data
+     * @param string $location
+     * @return array
+     */
     // todo see implementation via guzzle
     public function callWeatherAPI($location){
 
@@ -85,6 +104,12 @@ class Weather
         return $result;
     }
 
+    /**
+     * Check if cache file for JeffBdnToolsBundle's Weather Service exists
+     * if not, create it
+     * @return bool
+     * @throws IOException
+     */
     public function checkCacheFileExists(){
 
         // if no cache dir, create one
@@ -109,6 +134,12 @@ class Weather
         return true;
     }
 
+    /**
+     * Get Broadcast data from cache
+     * @return bool
+     * @return array
+     * todo make it possible to store several broadcast for several locations
+     */
     public function getDataFromCache(){
 
         if ($this->checkCacheFileExists()){
@@ -123,7 +154,13 @@ class Weather
         }
     }
 
-    public function majDataInCache($data=''){
+    /**
+     * Update Broadcast Data in Cache
+     * @param string $data
+     * @throws IOException
+     * todo make it possible to update specific location data
+     */
+    public function updateDataInCache($data=''){
 
         if ($this->checkCacheFileExists()){
 
@@ -142,6 +179,12 @@ class Weather
         }
     }
 
+    /**
+     * Get data from JSON file and returns it as an array
+     * @param $path
+     * @return bool
+     * @return array
+     */
     public function getJsonFileDataAsArray($path){
         if (empty($filedata = file_get_contents($path))) return false;
         $res = json_decode($filedata, true);
@@ -174,6 +217,12 @@ class Weather
 
         NOTE: this version do not support city names with apostrophes in their names, like
             Muḩāfaz̧at al ‘Āşimah,kw
+     */
+    /**
+     * Validate Location format
+     * "CityName,ISOCountry" like "Paris, fr"
+     * @param $location
+     * @return bool
      */
     public function checkLocation($location){
         $regexp = '~^[\p{L}\p{Mn}\p{Pd}\'\x{2019}\s]+$~u';
