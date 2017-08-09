@@ -16,7 +16,7 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
         parent::__construct();
 
         $this->weather = new Weather(
-            '26142b071b1d6e8839235a01803a0a08',
+            'MY API KEY',
             'http://api.openweathermap.org/data/2.5/weather?q=',
             '/home/jeff/DATA/Projets/dummyshop_sf2/app/cache/dev/jeffbdntoolsbundle',
             '/home/jeff/DATA/Projets/dummyshop_sf2/app/cache/dev/jeffbdntoolsbundle/weather.json',
@@ -30,6 +30,7 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
     public function test_global_broadcast(){}
 
     /*
+     * @depends test_checkLocation
      * @depends test_correctKeys_broadcast_
      */
     public function test_ok_broadcast(){
@@ -83,5 +84,17 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($broadcast);
     }
 
+    public function test_checkLocation()
+    {
+        $this->assertTrue($this->weather->checkLocation('Paris,fr'));
+        $this->assertTrue($this->weather->checkLocation('Münich,de'));
+        $this->assertTrue($this->weather->checkLocation('State of Haryāna,in'));
+        $this->assertTrue($this->weather->checkLocation('Bāgmatī Zone,np'));
+        $this->assertTrue($this->weather->checkLocation('Mar’ina Roshcha,ru'));
+        $this->assertTrue($this->weather->checkLocation('San Sebastián Municipio,pr'));
+        // this city name has an apostrophe in it, currently not supported
+        //$this->assertTrue($this->weather->checkLocation('Muḩāfaz̧at al ‘Āşimah,kw'));
+        $this->assertTrue($this->weather->checkLocation('Fröschen,de'));
+    }
 
 }

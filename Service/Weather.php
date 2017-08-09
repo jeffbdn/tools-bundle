@@ -29,11 +29,17 @@ class Weather
 
     public function broadcast($location)
     {
+        if (! $this->checkLocation($location)) return array(
+            'ok' => false,
+            'error_code' => '000',
+            'error_message' => 'location contains invalid characters: brackets, semi-colom...');
+
         if ($weather = $this->getDataFromCache()) {
             $dateExpire = date_create("- ".$this->refresh);
             $dateThen = date_create($weather['date']);
             if ($dateThen > $dateExpire) return $weather;
         }
+
         // renew value in cache
         $weather = $this->callWeatherAPI($location);
         $this->majDataInCache($weather);
@@ -53,28 +59,28 @@ class Weather
 
         $result = array();
 
-        $result['date']                  = date("Y-m-d H:i:s");
-        $result['temp_k']                = $arrayWeather['main']['temp'];
-        $result['temp_k_min']            = $arrayWeather['main']['temp_min'];
-        $result['temp_k_max']            = $arrayWeather['main']['temp_max'];
-        $result['temp_c']                = $arrayWeather['main']['temp'] - 272.15;
-        $result['temp_c_min']            = $arrayWeather['main']['temp_min'] - 272.15;
-        $result['temp_c_max']            = $arrayWeather['main']['temp_max'] - 272.15;
-        $result['temp_f']                = (($arrayWeather['main']['temp']-272.15)*1.8)+32;
-        $result['temp_f_min']            = (($arrayWeather['main']['temp_min']-272.15)*1.8)+32;
-        $result['temp_f_max']            = (($arrayWeather['main']['temp_max']-272.15)*1.8)+32;
-        $result['humidity']              = $arrayWeather['main']['humidity'];
-        $result['sky_description_short'] = $arrayWeather['weather'][0]['main'];
-        $result['sky_description_long']  = $arrayWeather['weather'][0]['description'];
-        $result['pressure_hpa']          = $arrayWeather['main']['pressure'];
+        $result['date']                   = date("Y-m-d H:i:s");
+        $result['temp_k']                 = $arrayWeather['main']['temp'];
+        $result['temp_k_min']             = $arrayWeather['main']['temp_min'];
+        $result['temp_k_max']             = $arrayWeather['main']['temp_max'];
+        $result['temp_c']                 = $arrayWeather['main']['temp'] - 272.15;
+        $result['temp_c_min']             = $arrayWeather['main']['temp_min'] - 272.15;
+        $result['temp_c_max']             = $arrayWeather['main']['temp_max'] - 272.15;
+        $result['temp_f']                 = (($arrayWeather['main']['temp']-272.15)*1.8)+32;
+        $result['temp_f_min']             = (($arrayWeather['main']['temp_min']-272.15)*1.8)+32;
+        $result['temp_f_max']             = (($arrayWeather['main']['temp_max']-272.15)*1.8)+32;
+        $result['humidity_percent']       = $arrayWeather['main']['humidity'];
+        $result['sky_description_short']  = $arrayWeather['weather'][0]['main'];
+        $result['sky_description_long']   = $arrayWeather['weather'][0]['description'];
+        $result['pressure_hpa']           = $arrayWeather['main']['pressure'];
         $result['wind_speed_metersec']    = $arrayWeather['wind']['speed'];
         $result['wind_direction_degrees'] = $arrayWeather['wind']['deg'];
         $result['cloud_percent']          = $arrayWeather['clouds']['all'];
-        $result['sunrise']               = date("Y-m-d H:i:s", $arrayWeather['sys']['sunrise']);
-        $result['sunset']                = date("Y-m-d H:i:s", $arrayWeather['sys']['sunset']);
-        $result['ok']                    = ($arrayWeather['cod'] != 200) ? false : true;
-        $result['error_code']            = $arrayWeather['cod'];
-        $result['error_string']          = ($arrayWeather['cod'] == 200) ? '' : $arrayWeather['message'];
+        $result['sunrise']                = date("Y-m-d H:i:s", $arrayWeather['sys']['sunrise']);
+        $result['sunset']                 = date("Y-m-d H:i:s", $arrayWeather['sys']['sunset']);
+        $result['ok']                     = ($arrayWeather['cod'] != 200) ? false : true;
+        $result['error_code']             = $arrayWeather['cod'];
+        $result['error_string']           = ($arrayWeather['cod'] == 200) ? '' : $arrayWeather['message'];
 
         return $result;
     }
@@ -140,5 +146,39 @@ class Weather
         if (empty($filedata = file_get_contents($path))) return false;
         $res = json_decode($filedata, true);
         return !is_null($res) ? $res : false;
+    }
+
+    /*
+     * solution found on https://stackoverflow.com/questions/5963228/regex-for-names-with-special-characters-unicode
+     * to be read like:
+     * ^   # start of subject
+        (?:     # match this:
+            [           # match a:
+                \p{L}       # Unicode letter, or
+                \p{Mn}      # Unicode accents, or
+                \p{Pd}      # Unicode hyphens, or
+                \'          # single quote, or
+                \x{2019}    # single quote (alternative)
+            ]+              # one or more times
+            \s          # any kind of space
+            [               #match a:
+                \p{L}       # Unicode letter, or
+                \p{Mn}      # Unicode accents, or
+                \p{Pd}      # Unicode hyphens, or
+                \'          # single quote, or
+                \x{2019}    # single quote (alternative)
+            ]+              # one or more times
+            \s?         # any kind of space (0 or more times)
+        )+      # one or more times
+        $   # end of subject
+
+        NOTE: this version do not support city names with apostrophes in their names, like
+            Muḩāfaz̧at al ‘Āşimah,kw
+     */
+    public function checkLocation($location){
+        $regexp = '~^[\p{L}\p{Mn}\p{Pd}\'\x{2019}\s]+$~u';
+        $tmp = explode(',', $location);
+        $check = (strlen($tmp[1]) === 2) && (preg_match($regexp, $tmp[0]));
+        return $check ? true : false;
     }
 }
