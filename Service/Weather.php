@@ -199,7 +199,7 @@ class Weather
 
     /**
      * Validate Location format
-     * "CityName,ISOCountry" like "Paris, fr"
+     * "CityName,ISOCountry" like "Paris,fr"
      * regexp found on https://stackoverflow.com/questions/5963228/regex-for-names-with-special-characters-unicode
      * NOTE: this version do not support city names with apostrophes in their names,
      * like << Muḩāfaz̧at al ‘Āşimah,kw >>
