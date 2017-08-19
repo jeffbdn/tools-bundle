@@ -6,8 +6,20 @@ use JeffBdn\ToolsBundle\Service\Weather;
 
 /**
  * test this class with the following command:
- * phpunit vendor/jeffbdn/tools-bundle/JeffBdn/ToolsBundle/Tests/Weather.php
+ * phpunit --configuration app/phpunit.xml.dist vendor/jeffbdn/tools-bundle/JeffBdn/ToolsBundle/Tests/Weather.php
  * @author Jean-Francois BAUDRON <jeanfrancois.baudron@free.fr>
+ * list of tests:
+ * test_global_broadcast
+ *     test_ok_broadcast
+ *         test_correctKeys_broadcast
+ *             test_notEmpty_broadcast
+ *         test_checkLocation
+ *         test_formatWeatherDataFromAPI
+ *             test_callWeatherAPI
+ *         test_updateDataInCache
+ *             test_getDataFromCache
+ *                 test_getJsonFileDataAsArray
+ *                     test_checkCacheFileExists
  */
 class WeatherTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +34,6 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
      */
 
     /**
-     * @param Weather $weather
      * @return array
      * @large
      */
@@ -40,8 +51,8 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
             new Weather(
                 'MY API KEY',
                 'http://api.openweathermap.org/data/2.5/weather?q=',
-                '/home/jeff/DATA/Projets/dummyshop_sf2/app/cache/dev/jeffbdntoolsbundle',
-                '/home/jeff/DATA/Projets/dummyshop_sf2/app/cache/dev/jeffbdntoolsbundle/weather.json',
+                'MY SF2 PROJECT/app/cache/dev/jeffbdntoolsbundle',
+                'MY SF2 PROJECT/app/cache/dev/jeffbdntoolsbundle/weather.json',
                 '1 day'
             )));
     }
@@ -51,6 +62,56 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
      */
 
     /**
+     * @dataProvider weatherObjProvider
+     */
+    public function test_checkCacheFileExists($weather){
+        $fakepath = $weather->getCachefilepath().'tmp';
+        $weather->setCachefilepath($fakepath);
+        $this->assertTrue($weather->checkCacheFileExists());
+    }
+
+    /**
+     * @depends test_checkCacheFileExists
+     * @dataProvider weatherObjProvider
+     */
+    public function test_getJsonFileDataAsArray($weather){
+        $path = $weather->getCachefilepath();
+        $data = array('test1'=>'test2','test3'=>array('test4'=>'test5'));
+        $weather->getFs()->dumpFile($path, json_encode($data));
+        $result = $weather->getJsonFileDataAsArray($path);
+        $weather->getFs()->remove($path);
+        $this->assertEquals($data, $result);
+    }
+
+    /**
+     * @depends test_getJsonFileDataAsArray
+     * @dataProvider weatherObjProvider
+     */
+    public function test_getDataFromCache($weather){
+        $path = $weather->getCachefilepath();
+        $data = array('test1'=>'test2','test3'=>array('test4'=>'test5'));
+        $weather->getFs()->dumpFile($path, json_encode($data));
+        $result = $weather->getDataFromCache('test3');
+        $weather->getFs()->remove($path);
+        $this->assertEquals($data['test3'], $result);
+    }
+
+    /**
+     * @depends test_getDataFromCache
+     * @dataProvider weatherObjProvider
+     */
+    public function test_updateDataInCache($weather) {
+        $path = $weather->getCachefilepath();
+        $data = array('test1'=>'test2','test3'=>array('test4'=>'test5'));
+        $weather->getFs()->dumpFile($path, json_encode($data));
+        $data2 = array('test4' => 'test6');
+        $weather->updateDataInCache($data2, 'test3');
+        $result = $weather->getDataFromCache('test3');
+        $weather->getFs()->remove($path);
+        $this->assertEquals($data2, $result);
+    }
+
+    /**
      * This test makes an API call
      * @param array $data
      * @dataProvider getAPIdataProvider
@@ -58,8 +119,6 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
     public function test_callWeatherAPI($data){
         $this->assertEquals(200, $data['cod']);
     }
-
-
 
     /**
      * An error here means OpenWeatherMaps changed their JSON format by deleting an entry.

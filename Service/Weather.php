@@ -12,6 +12,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
  */
 class Weather
 {
+
     private $apiKey;
     private $apiUrlBase;
     private $cachedir;
@@ -21,20 +22,20 @@ class Weather
 
     /**
      * Weather constructor.
-     * @param $apikey key used for calling OpenWeatherMaps API
-     * @param $apiurlbase base url for calling OpenWeatherMaps API
-     * @param $cachedir path to cache directory
-     * @param $cachefilepath path to cache file
-     * @param $refresh time interval before refreshing cached data
+     * @param string $apikey - key used for calling OpenWeatherMaps API
+     * @param string $apiurlbase - base url for calling OpenWeatherMaps API
+     * @param string $cachedir - path to cache directory
+     * @param string $cachefilepath - path to cache file
+     * @param string $refresh - time interval before refreshing cached data
      * todo put those in config file : currently service.yml
      */
     public function __construct($apikey, $apiurlbase, $cachedir, $cachefilepath, $refresh){
-        $this->apiKey        = $apikey;
-        $this->apiUrlBase    = $apiurlbase;
-        $this->cachedir      = $cachedir;
-        $this->cachefilepath = $cachefilepath;
-        $this->refresh       = $refresh;
-        $this->fs            = new Filesystem();
+        $this->setApiKey($apikey);
+        $this->setApiUrlBase($apiurlbase);
+        $this->setCachedir($cachedir);
+        $this->setCachefilepath($cachefilepath);
+        $this->setRefresh($refresh);
+        $this->setFs(new Filesystem());
     }
 
     /**
@@ -43,7 +44,7 @@ class Weather
      * if provided $location is not formated as precised below, returns array with errors
      * if cached data is too old regarding to configured refresh time, it is renewed.
      * @param string $location ref location - format "CityName,ISOCountry" like "Paris,fr"
-     * @return array
+     * @return array $weather
      */
     public function broadcast($location)
     {
@@ -53,7 +54,7 @@ class Weather
             'error_message' => 'location contains invalid characters: brackets, semi-colom...');
 
         if ($weather = $this->getDataFromCache($location)) {
-            $dateExpire = date_create("- ".$this->refresh);
+            $dateExpire = date_create("- ".$this->getRefresh());
             $dateThen = date_create($weather['date']);
             if ($dateThen > $dateExpire) return $weather;
         }
@@ -75,9 +76,9 @@ class Weather
     public function callWeatherAPI($location)
     {
         $ch = \curl_init();
-        \curl_setopt($ch, CURLOPT_URL, $this->apiUrlBase . $location);
+        \curl_setopt($ch, CURLOPT_URL, $this->getApiUrlBase() . $location);
         \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        \curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-Key: ' . $this->apiKey));
+        \curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-Key: ' . $this->getApiKey()));
         $jsonWeather = \curl_exec($ch);
         return json_decode($jsonWeather, true);
     }
@@ -125,36 +126,36 @@ class Weather
     public function checkCacheFileExists(){
 
         // if no cache dir, create one
-        if (!$this->fs->exists($this->cachedir) && !is_dir($this->cachedir)) {
+        if (!$this->getFs()->exists($this->getCachedir()) && !is_dir($this->getCachedir())) {
             try {
-                mkdir($this->cachedir,0777);
+                mkdir($this->getCachedir(),0777);
             } catch (IOException $e){
                 throw new IOException('cannot create cache directory for jeffbdn:toolsbundle');
             }
         }
 
         // if no cache file, touch one and return false
-        if (!$this->fs->exists($this->cachefilepath)){
+        if (!$this->getFs()->exists($this->getCachefilepath())){
             try {
-                $this->fs->dumpFile($this->cachefilepath,'');
+                $this->getFs()->dumpFile($this->getCachefilepath(),'');
             } catch (IOException $e){
                 throw new IOException('cannot create cache directory for jeffbdn:toolsbundle');
             }
             return false;
         }
-
         return true;
     }
 
     /**
      * Get Broadcast data from cache for a location
      * If data is not present in cache file, return false
+     * @param $location
      * @return bool
      * @return array
      */
     public function getDataFromCache($location){
         if ($this->checkCacheFileExists()){
-            if ($cachefiledata = $this->getJsonFileDataAsArray($this->cachefilepath))
+            if ($cachefiledata = $this->getJsonFileDataAsArray($this->getCachefilepath()))
                 if (array_key_exists($location, $cachefiledata))
                     return $cachefiledata[$location];
             return false;
@@ -164,6 +165,7 @@ class Weather
     /**
      * Update Broadcast Data in Cache
      * @param string $data
+     * @param string $location
      * @throws IOException
      */
     public function updateDataInCache($data='', $location){
@@ -171,12 +173,12 @@ class Weather
         if ($this->checkCacheFileExists()){
 
             // if cache file is not empty
-            if ($cachefiledata = $this->getJsonFileDataAsArray($this->cachefilepath))
+            if ($cachefiledata = $this->getJsonFileDataAsArray($this->getCachefilepath()))
                 $cachefiledata[$location] = $data;
             else $cachefiledata = [$location => $data];
 
             try {
-                $this->fs->dumpFile($this->cachefilepath, json_encode($cachefiledata), 0777);
+                $this->getFs()->dumpFile($this->getCachefilepath(), json_encode($cachefiledata));
             } catch (IOException $e){
                 throw new IOException('cannot write in cache for jeffbdn:toolsbundle');
             }
@@ -210,5 +212,101 @@ class Weather
         $tmp = explode(',', $location);
         $check = (strlen($tmp[1]) === 2) && (preg_match($regexp, $tmp[0]));
         return $check ? true : false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @param string $apiKey
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrlBase()
+    {
+        return $this->apiUrlBase;
+    }
+
+    /**
+     * @param string $apiUrlBase
+     */
+    public function setApiUrlBase($apiUrlBase)
+    {
+        $this->apiUrlBase = $apiUrlBase;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCachedir()
+    {
+        return $this->cachedir;
+    }
+
+    /**
+     * @param string $cachedir
+     */
+    public function setCachedir($cachedir)
+    {
+        $this->cachedir = $cachedir;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCachefilepath()
+    {
+        return $this->cachefilepath;
+    }
+
+    /**
+     * @param string $cachefilepath
+     */
+    public function setCachefilepath($cachefilepath)
+    {
+        $this->cachefilepath = $cachefilepath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefresh()
+    {
+        return $this->refresh;
+    }
+
+    /**
+     * @param string $refresh
+     */
+    public function setRefresh($refresh)
+    {
+        $this->refresh = $refresh;
+    }
+
+    /**
+     * @return Filesystem
+     */
+    public function getFs()
+    {
+        return $this->fs;
+    }
+
+    /**
+     * @param Filesystem $fs
+     */
+    public function setFs($fs)
+    {
+        $this->fs = $fs;
     }
 }
