@@ -8,7 +8,6 @@ use Symfony\Component\Filesystem\Exception\IOException;
  * Service that provides a broadcast for a named city
  * Uses OpenWeatherMaps API https://openweathermap.org
  * @author Jean-Francois BAUDRON <jeanfrancois.baudron@free.fr>
- * todo correct all obsolescences
  */
 class Weather
 {
@@ -27,7 +26,6 @@ class Weather
      * @param string $cachedir - path to cache directory
      * @param string $cachefilepath - path to cache file
      * @param string $refresh - time interval before refreshing cached data
-     * todo put those in config file : currently service.yml
      */
     public function __construct($apikey, $apiurlbase, $cachedir, $cachefilepath, $refresh){
         $this->setApiKey($apikey);
@@ -72,7 +70,6 @@ class Weather
      * @return array
      * based on OpenWeatherMaps API version as of 2017.08.09
      */
-    // todo see implementation via guzzle
     public function callWeatherAPI($location)
     {
         $ch = \curl_init();

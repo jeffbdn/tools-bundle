@@ -58,12 +58,17 @@ Then, add and customise those parameters in your `config.yml`:
 # app/config/config.yml
 parameters:
       jeffbdn_tools.weather.apikey: 'PASTE HERE YOUR openweathermaps API KEY'
-      jeffbdn_tools.weather.apiurlbase: 'http://api.openweathermap.org/data/2.5/weather?q='
-      jeffbdn_tools.weather.cachedir: '%kernel.cache_dir%/jeffbdntoolsbundle'
-      jeffbdn_tools.weather.cachefilepath: '%kernel.cache_dir%/jeffbdntoolsbundle/weather.json'
       jeffbdn_tools.weather.refresh: '3 minutes' # or 1 day or 2 days or 1 hour or 2 hours or 1 minute or 2 minutes
 ```
 
+jeffbdn_tools.weather.apikey:
+In order to use the Weather Service, you will need an OpenWeatherMaps API Key.
+You can get one for free by creating a new account on https://home.openweathermap.org/users/sign_up .
+
+jeffbdn_tools.weather.refresh:
+You can choose the refresh rate for the broadcast for all locations.
+The cache will be renewed on next call if the data get older than the amount of time your precised. 
+ 
 Step 3: Use the Tools
 -------------------------
 
